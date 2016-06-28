@@ -6,6 +6,16 @@
 #define WINDOW_SIZE_WIDTH	80
 #define WINDOW_SIZE_HEIGHT 	24
 
+#define RED	"\x1B[31m"
+#define GRN	"\x1B[32m"
+#define YEL	"\x1B[33m"
+#define BLU	"\x1B[34m"
+#define MAG	"\x1B[35m"
+#define CYN	"\x1B[36m"
+#define WHT	"\x1B[37m"
+#define RST	"\x1B[0m"
+
+
 void updateGameView(WINDOW * win, Board b);
 
 int main(int argc, char ** argv){
@@ -15,8 +25,11 @@ int main(int argc, char ** argv){
 	}
 
 	WINDOW * win;
-	WINDOW * scorewin;
 	initscr();
+
+	start_color();
+	use_default_colors();
+
 	clear();
 	noecho();
 	cbreak();
@@ -25,6 +38,22 @@ int main(int argc, char ** argv){
 	Board b = newBoard(atoi(argv[1]));
 
 	win = newwin(getSize(b)+2,getSize(b) + 20,0,2);
+
+	init_pair(1, COLOR_WHITE, COLOR_RED);
+	init_pair(2, COLOR_WHITE, COLOR_BLUE);
+	init_pair(3, COLOR_WHITE, COLOR_GREEN);
+	init_pair(4, COLOR_WHITE, COLOR_YELLOW);
+	init_pair(5, COLOR_WHITE, COLOR_MAGENTA);
+	init_pair(6, COLOR_WHITE, COLOR_CYAN);
+	init_pair(7, COLOR_RED, COLOR_WHITE);
+	init_pair(8, COLOR_BLUE, COLOR_WHITE);
+	init_pair(9, COLOR_GREEN, COLOR_WHITE);
+	init_pair(10, COLOR_YELLOW, COLOR_WHITE);
+	init_pair(11, COLOR_MAGENTA, COLOR_WHITE);
+	init_pair(12, COLOR_RED, COLOR_WHITE);
+	init_pair(13, COLOR_CYAN, COLOR_WHITE);
+	init_pair(14, COLOR_MAGENTA, COLOR_RED);
+	init_pair(15, COLOR_CYAN, COLOR_BLUE);
 
 	keypad(win,TRUE);
 	refresh();
@@ -60,12 +89,19 @@ int main(int argc, char ** argv){
 	return 0;
 }
 
+void printTile(WINDOW * win, int i, int j, int val){
+	wattron(win, COLOR_PAIR(val));
+	mvwprintw(win,i,j,"%X", val);
+	wattroff(win, COLOR_PAIR(val));
+}
+
 void updateGameView(WINDOW * win, Board b){
 	box(win, 0, 0);
 	int i,j,tmp;
 	for(i=1; i<=getSize(b); i++){
 		for(j=1; j<=getSize(b); j++){
-			if((tmp=getTile(b,i-1,j-1)) != 0) mvwprintw(win,i,j,"%d", tmp);
+			if((tmp=getTile(b,i-1,j-1)) != 0)
+				printTile(win,i,j,tmp);
 			else mvwprintw(win,i,j," ");
 		}
 	}

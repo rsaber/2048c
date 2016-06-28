@@ -44,17 +44,6 @@ unsigned long long getScore(Board b){
 	return b->score;
 }
 
-static void printBoard(Board b){
-	int i,j;
-	for(i=0; i<b->size; i++){
-		for(j=0; j<b->size; j++){
-			printf("|%d",b->field[j][i]);
-		}
-		printf("|\n");
-	}
-	printf("\n");
-}
-
 static int shiftTileLeft(Board b,int x, int y){
 	if(x<=0 || b->field[x][y] == 0) return 0;
 
@@ -194,14 +183,14 @@ void shiftField(Board b, char move){
 
 // fix this up
 void addRandomTile(Board b){
-	time_t now = time(0);
-	int tile = (now  % 2) + 1;
+	srand((unsigned)time(NULL));
+
+	int tile = (rand()  % 2) + 1;
 	int x,y;
 
 	do{
-		time_t now = time(0);
-		x = (now + 12312) % b->size;
-		y = (now + 214123) % b->size;
+		x = rand() % b->size;
+		y = rand() % b->size;
 	}while(b->field[x][y]!=0);
 
 	b->field[x][y] = tile;
